@@ -118,3 +118,4 @@ let bet = getBet(balance,numberOfLines);
 const reels= spin();
 printRows(reels);
 
+
