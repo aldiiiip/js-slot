@@ -9,13 +9,13 @@ const SYMBOLS_COUNT = {
     B:4,
     C:6,
     D:8
-}
+};
 const SYMBOLS_VALUES = {
     A:5,
     B:4,
     C:3,
     D:2
-}
+};
 
 
 
@@ -32,7 +32,7 @@ const deposit = () => {
         }
     }
     
-}
+};
 
 
 const getNumberLines = () => {
@@ -47,7 +47,7 @@ const getNumberLines = () => {
             return lines;
         }
     }
-}
+};
 
 const getBet = (balance, numberOfLines) => {
     while(true){
@@ -63,7 +63,7 @@ const getBet = (balance, numberOfLines) => {
             return bet;
         }
     }
-}
+};
 
 
 
@@ -86,13 +86,11 @@ const spin = () => {
             const selectedSymbol = reelSymbols[randomIndex];
             reels[j].push(selectedSymbol);
             reelSymbols.splice(randomIndex,1);
-            console.log(reels)
         }
         
     }
-    console.log(reels)
     return reels;
-    }
+};
 
 
 const printRows = (reels) => {
@@ -106,16 +104,58 @@ const printRows = (reels) => {
         }
         console.log(reelString);
     }
-}
+};
 
 
+const getWinnings = (reels, bet, numberOfLines) =>{
+
+    let winnings = 0;
+    for (let row = 0; row < numberOfLines; row++){
+        const symbols = reels[row];
+        let allSame = true;
+
+        for (const symbol of symbols){
+            if(symbol != symbols[0]){
+                allSame = false;
+                break;
+            }
+        }
+        if(allSame){
+            winnings += bet * SYMBOLS_VALUES[symbols[0]];
+        }
+    }
+    return winnings;
+};
 
 
+const game = () =>{
 
-let balance = deposit();
-let numberOfLines = getNumberLines();
-let bet = getBet(balance,numberOfLines);
-const reels= spin();
-printRows(reels);
+    let balance = deposit();
 
+    while(true){
+        console.log("Current balance: $"+balance);
+        let numberOfLines = getNumberLines();
+        let bet = getBet(balance,numberOfLines);
+        balance -= bet * numberOfLines;
+        const reels= spin();
+        printRows(reels);
+        const winnings = getWinnings(reels, bet, numberOfLines);
+        balance += winnings;
+        console.log("You won: $"+winnings);
+
+        if (balance <= 0){
+            const addDeposit = prompt("No money left, add deposit? (y/n): ");
+            if(addDeposit == 'y') balance += deposit(); 
+            else break;
+
+        }
+
+        const playAgain = prompt("Want to play again? (y/n): ");
+        if (playAgain != 'y') break;
+        
+    }
+    
+};
+
+game();
 
